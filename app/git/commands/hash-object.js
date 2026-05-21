@@ -30,13 +30,9 @@ class HashObjectCommand {
       );
     }
 
-<<<<<<< HEAD
     if (this.flag !== "-w") {
       console.log(sha);
     }
-=======
-    console.log(sha);
->>>>>>> 13fecb555cf248f8b10083346c3c5e1a0c73ab3c
     return sha;
   }
 }

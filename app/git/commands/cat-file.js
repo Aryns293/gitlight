@@ -37,22 +37,12 @@ class CatFileCommand {
     const [type] = header.split(" ");
 
     if (this.flag === "-p") {
-<<<<<<< HEAD
       process.stdout.write(content.toString());
     } else if (this.flag === "-t") {
       console.log(type);
     } else {
       console.error(`Unknown flag: ${this.flag}`);
       process.exit(1);
-=======
-      if (type === "blob") {
-        process.stdout.write(content.toString());
-      } else {
-        process.stdout.write(content.toString());
-      }
-    } else {
-      console.log(type);
->>>>>>> 13fecb555cf248f8b10083346c3c5e1a0c73ab3c
     }
   }
 }

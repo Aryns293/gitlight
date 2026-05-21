@@ -2,10 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const zlib = require("zlib");
-<<<<<<< HEAD
 const Index = require("../index");
-=======
->>>>>>> 13fecb555cf248f8b10083346c3c5e1a0c73ab3c
 
 class CommitTreeCommand {
   constructor(tree, parent, message) {
@@ -50,13 +47,10 @@ class CommitTreeCommand {
     }
 
     console.log(sha);
-<<<<<<< HEAD
 
     // clear staging area after commit
     const index = new Index();
     index.clear();
-=======
->>>>>>> 13fecb555cf248f8b10083346c3c5e1a0c73ab3c
   }
 }
 

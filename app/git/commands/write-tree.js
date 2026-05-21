@@ -41,12 +41,9 @@ class WriteTreeCommand {
     );
 
     console.log(sha);
-<<<<<<< HEAD
 
     // clear staging area after tree is written
     index.clear();
-=======
->>>>>>> 13fecb555cf248f8b10083346c3c5e1a0c73ab3c
   }
 }
 

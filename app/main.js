@@ -9,7 +9,8 @@ const {
   WriteTreeCommand,
   CommitTreeCommand,
   LsTreeCommand,
-  LogCommand
+  LogCommand,
+  DiffCommand
 } = require("./git/commands");
 
 const command = process.argv[2];
@@ -40,6 +41,9 @@ try {
           process.argv[5]
         )
       );
+      break;
+    case "diff":
+      gitClient.run(new DiffCommand(process.argv[3], process.argv[4]));
       break;
     case "ls-tree":
     if(process.argv.length === 4) {
