@@ -1,6 +1,6 @@
-# Git Object Engine
+# GitLight
 
-A from-scratch reimplementation of Git's core internals in Node.js — including blobs, trees, commits, SHA-1 hashing, zlib compression, and DAG-based commit traversal.
+A lightweight, from-scratch reimplementation of Git's core internals in Node.js — including blobs, trees, commits, SHA-1 hashing, zlib compression, and DAG-based commit traversal.
 
 > Demystifies Git by rebuilding its plumbing layer from scratch. Objects generated are **fully compatible with real Git**.
 
@@ -17,6 +17,10 @@ Instead of treating Git as a black box, this project implements:
 - Commit Directed Acyclic Graph (DAG)
 - Custom staging index
 - CLI command execution engine
+- LCS-based colored diff (same algorithm as real Git)
+- Auto HEAD resolution in log
+- Porcelain + Plumbing command separation
+- Command Pattern architecture
 
 ---
 
@@ -24,12 +28,16 @@ Instead of treating Git as a black box, this project implements:
 
 ```
 file.txt
-    ↓ add
-blob (SHA1)
-    ↓ index (staging)
-commit -m "message"
-    ↓
-tree object + commit object (linked via parent → DAG)
+    ↓ gitlight add
+blob (SHA1) → stored in .git/objects/
+    ↓ index (staging area)
+gitlight commit -m "message"
+    ↓ write-tree internally
+tree object → snapshot of folder
+    ↓ commit-tree internally
+commit object (linked via parent → DAG)
+    ↓ gitlight log
+traverses DAG backwards via parent pointers
 ```
 
 ---
@@ -41,10 +49,10 @@ tree object + commit object (linked via parent → DAG)
 | Command | Description | Real Git Equivalent |
 |---|---|---|
 | init | Initialize repository | git init |
-| add | Stage file | git add |
-| commit -m | Commit staged files | git commit -m |
-| log | Traverse commit history | git log |
-| diff | Compare two commits with colored output | git diff |
+| add | Stage file, create blob object | git add |
+| commit -m | Commit staged files in one command | git commit -m |
+| log | Traverse commit history (reads HEAD automatically) | git log |
+| diff | Compare two commits with colored LCS-based output | git diff |
 
 ### 🔧 Plumbing (Internal / Advanced)
 
@@ -53,7 +61,8 @@ tree object + commit object (linked via parent → DAG)
 | hash-object | Hash and store a file as blob | git hash-object |
 | write-tree | Create tree object from index | git write-tree |
 | commit-tree | Create commit object manually | git commit-tree |
-| cat-file | Inspect any object by SHA | git cat-file |
+| cat-file -p | Inspect any object content by SHA | git cat-file -p |
+| cat-file -t | Get type of any object by SHA | git cat-file -t |
 | ls-tree | List tree contents | git ls-tree |
 
 ---
@@ -126,17 +135,31 @@ committer <name> <timestamp>
 
 ---
 
-### 🎨 Diff Output (Colored)
+### 🎨 Diff Output (LCS Algorithm)
+
+Uses **Longest Common Subsequence (LCS)** — the same algorithm real Git uses — to accurately identify added, deleted, and unchanged lines.
 
 ```
 diff → file.txt
 --- file.txt (commit1)
 +++ file.txt (commit2)
-- Hello Git
-+ Hello Git Updated
+  Hello
++ New Line       ← correctly identified as insertion
+  World
+  Bye
 ```
 
 Red = deleted lines, Green = added lines
+
+---
+
+### 🔗 HEAD Chain
+
+```
+HEAD → refs/heads/main → commit SHA → tree SHA → blob SHA → file content
+```
+
+`gitlight log` resolves this chain automatically — no manual SHA needed.
 
 ---
 
@@ -144,25 +167,30 @@ Red = deleted lines, Green = added lines
 
 ```bash
 # Initialize repository
-git-object-engine init
+gitlight init
 
 # Create and stage a file
 echo "Hello Git" > file.txt
-git-object-engine add file.txt
+gitlight add file.txt
 
-# Commit
-git-object-engine commit -m "Initial commit"
+# Commit in one command
+gitlight commit -m "Initial commit"
 
 # View history (reads HEAD automatically)
-git-object-engine log
+gitlight log
 
 # Make changes and commit again
 echo "Hello Git Updated" > file.txt
-git-object-engine add file.txt
-git-object-engine commit -m "Update file"
+gitlight add file.txt
+gitlight commit -m "Update file"
 
 # Diff between two commits
-git-object-engine diff <commit1SHA> <commit2SHA>
+gitlight diff <commit1SHA> <commit2SHA>
+
+# Inspect any object
+gitlight cat-file -t <SHA>    # get type
+gitlight cat-file -p <SHA>    # get content
+gitlight ls-tree <SHA>        # list tree
 ```
 
 ---
@@ -170,8 +198,8 @@ git-object-engine diff <commit1SHA> <commit2SHA>
 ## 📦 Installation & Setup
 
 ```bash
-git clone https://github.com/Aryns293/git-object-engine
-cd git-object-engine
+git clone https://github.com/Aryns293/gitlight
+cd gitlight
 npm install
 sudo npm link
 ```
@@ -179,14 +207,14 @@ sudo npm link
 Now you can run:
 
 ```bash
-git-object-engine <command>
+gitlight <command>
 ```
 
 ---
 
 ## ✅ Real Git Compatible
 
-Objects created by this engine are fully compatible with real Git.
+Objects created by GitLight are fully compatible with real Git.
 You can copy `.git/objects/` into any real Git repository and inspect them with `git cat-file`.
 
 ---
@@ -194,10 +222,12 @@ You can copy `.git/objects/` into any real Git repository and inspect them with 
 ## 🐛 Bug Fixes & Improvements
 
 - Fixed staging area not clearing after commit
-- Fixed SHA leaking to console during `git add`
-- Fixed staging area not clearing after `write-tree`
+- Fixed staging area not clearing after write-tree
+- Fixed SHA leaking to console during `gitlight add`
 - Made `cat-file -t` flag explicit with proper error on unknown flags
-- Improved `git log` to show author and human-readable date
+- Fixed `gitlight log` to show author and human-readable date
+- Fixed `gitlight log` to read HEAD automatically — no manual SHA needed
+- Upgraded diff from naive line comparison to LCS algorithm
 
 ---
 
@@ -206,7 +236,10 @@ You can copy `.git/objects/` into any real Git repository and inspect them with 
 - **Real binary compatibility** — objects can be read by actual Git
 - **Content-addressable storage** — same content always produces same SHA
 - **Real zlib compression** — not simulated, same algorithm as Git
+- **LCS-based diff** — Longest Common Subsequence, same as real Git
 - **DAG traversal** — walks commit history via parent pointers
+- **Auto HEAD resolution** — log reads HEAD automatically
+- **Porcelain + Plumbing separation** — both user-friendly and low-level commands
 - **Command Pattern architecture** — each command is independent and extensible
 
 ---
@@ -217,10 +250,11 @@ This project helps you:
 
 - Understand Git beyond surface-level usage
 - Learn content-addressable storage systems
-- Work with hashing and compression
+- Work with SHA-1 hashing and zlib compression
 - Implement binary encoding/decoding
 - Build CLI tools from scratch
 - Understand DAG-based version history
+- Implement LCS algorithm in a real use case
 
 ---
 
@@ -231,8 +265,8 @@ This project helps you:
 - Merge handling
 - Packfile support for large repos
 - Reflog for recovery
-- `git status` command
-- `git stash` command
+- `gitlight status` command
+- `gitlight stash` command
 
 ---
 
@@ -248,4 +282,4 @@ Delhi Technological University
 Most developers know how to use Git.
 Very few understand how Git actually works internally.
 
-👉 This project bridges that gap.
+👉 GitLight bridges that gap.
