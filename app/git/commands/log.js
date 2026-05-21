@@ -22,6 +22,7 @@ class LogCommand {
       const data = zlib.inflateSync(fs.readFileSync(objPath)).toString();
       const content = data.split("\0")[1];
 
+<<<<<<< HEAD
       const lines = content.split("\n");
       const author = lines.find(l => l.startsWith("author"));
       const date = author.split(" ").at(-2);
@@ -32,6 +33,10 @@ class LogCommand {
       console.log(`Date:   ${new Date(date * 1000).toDateString()}`);
       console.log();
       console.log(`    ${message}`);
+=======
+      console.log(`commit ${current}`);
+      console.log(content.split("\n\n")[1]);
+>>>>>>> 13fecb555cf248f8b10083346c3c5e1a0c73ab3c
       console.log();
 
       const parentMatch = content.match(/^parent ([a-f0-9]{40})/m);
