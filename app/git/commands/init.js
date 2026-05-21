@@ -13,7 +13,7 @@ class InitCommand {
       "ref: refs/heads/main\n"
     );
 
-    console.log("Initialized empty Git Object Engine repository");
+    console.log("Initialized empty GitLight repository");
   }
 }
 

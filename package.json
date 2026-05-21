@@ -1,10 +1,10 @@
 {
-  "name": "git-object-engine",
+  "name": "gitlight",
   "version": "1.0.0",
-  "description": "A from-scratch reimplementation of Git's object database and commit DAG engine in Node.js",
+  "description": "A lightweight Git implementation from scratch in Node.js - blobs, trees, commits, SHA-1 hashing, and DAG traversal.",
   "main": "app/main.js",
   "bin": {
-    "git-object-engine": "./app/main.js"
+    "gitlight": "./app/main.js"
   },
   "scripts": {
     "start": "node app/main.js"
