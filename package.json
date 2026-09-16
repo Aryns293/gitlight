@@ -7,8 +7,12 @@
     "gitlight": "./app/main.js"
   },
   "scripts": {
-    "start": "node app/main.js"
+    "start": "node app/main.js",
+    "test": "jest"
   },
   "author": "Aryan Sharma",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.5.1"
+  }
 }

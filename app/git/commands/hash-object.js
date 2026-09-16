@@ -4,8 +4,13 @@ const { ensureRepo } = require("../repo-guard");
 
 class HashObjectCommand {
   constructor(flag, filePath) {
-    this.flag = flag;
-    this.filePath = filePath;
+    if (filePath) {
+      this.flag = flag;
+      this.filePath = filePath;
+    } else {
+      this.flag = null;
+      this.filePath = flag;
+    }
   }
 
   execute() {
@@ -20,6 +25,7 @@ class HashObjectCommand {
     if (this.flag === "-w") {
       ensureRepo();
       sha = writeObject("blob", content);
+      console.log(sha);
     } else {
       sha = hashObject("blob", content).sha;
       console.log(sha);
