@@ -1,5 +1,7 @@
 # GitLight
 
+[![CI](https://github.com/Aryns293/gitlight/actions/workflows/ci.yml/badge.svg)](https://github.com/Aryns293/gitlight/actions/workflows/ci.yml)
+
 A lightweight, from-scratch reimplementation of Git's core internals in Node.js — including blobs, trees, commits, SHA-1 hashing, zlib compression, and DAG-based commit traversal.
 
 > Demystifies Git by rebuilding its plumbing layer from scratch. Objects generated are **byte-for-byte real Git objects**, including nested folders — see [Real Git Compatible](#-real-git-compatible).
@@ -271,6 +273,20 @@ Objects created by GitLight — blobs, trees (including multi-level nested folde
 - **Command Pattern architecture** — each command is independent and extensible, with shared plumbing factored out
 - **Friendly repository checks** — every command fails fast with a clear message instead of a raw Node error when run outside a GitLight repo
 - **Configurable author identity** — via environment variables, not hardcoded
+
+---
+
+## 🧪 Testing & CI
+
+To ensure the integrity of the object model and core commands, GitLight includes a robust test suite powered by **Jest**. The test suite executes end-to-end integration tests for `init`, `hash-object`, `add`, and `commit` to verify correct SHA computation, staging index mutations, and binary object creation.
+
+Continuous Integration (CI) is managed via **GitHub Actions**, automatically validating the suite against multiple Node.js environments on every push.
+
+To run the tests locally:
+```bash
+npm install
+npm test
+```
 
 ---
 
