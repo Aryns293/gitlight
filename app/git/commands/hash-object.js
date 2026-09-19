@@ -26,6 +26,9 @@ class HashObjectCommand {
       ensureRepo();
       sha = writeObject("blob", content);
       console.log(sha);
+    } else if (this.flag) {
+      console.error(`Unknown flag: ${this.flag}`);
+      process.exit(1);
     } else {
       sha = hashObject("blob", content).sha;
       console.log(sha);
