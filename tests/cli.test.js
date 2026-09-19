@@ -62,11 +62,12 @@ describe('GitLight CLI', () => {
   test('add stages files into the index', () => {
     run('init');
     fs.writeFileSync('test.txt', 'hello world');
-    run('add test.txt');
+    const output = run('add test.txt');
     
     expect(fs.existsSync('.git/index.json')).toBe(true);
     const index = JSON.parse(fs.readFileSync('.git/index.json', 'utf-8'));
     expect(index['test.txt']).toBe('95d09f2b10159347eece71399a7e2e907ea3df4f');
+    expect(output).toBe('Added test.txt');
   });
 
   test('commit creates tree and commit object', () => {
