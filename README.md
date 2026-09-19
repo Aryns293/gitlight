@@ -278,9 +278,16 @@ Objects created by GitLight — blobs, trees (including multi-level nested folde
 
 ## 🧪 Testing & CI
 
-To ensure the integrity of the object model and core commands, GitLight includes a robust test suite powered by **Jest**. The test suite executes end-to-end integration tests for `init`, `hash-object`, `add`, and `commit` to verify correct SHA computation, staging index mutations, and binary object creation.
+GitLight includes an automated Jest test suite covering the core CLI and Git object-model behavior. The integration tests cover repository initialization, object hashing and writing, staging, tree construction, commits, manual commit-tree creation, object inspection, tree listing, log traversal, diff generation, repository validation, and error cases.
 
-Continuous Integration (CI) is managed via **GitHub Actions**, automatically validating the suite against multiple Node.js environments on every push.
+The test suite also verifies multi-commit parent traversal and nested directory trees to catch regressions in the object and reference model.
+
+Continuous Integration (CI) is managed through GitHub Actions. The CI workflow installs dependencies with `npm ci` and runs the test suite against Node.js 18.x and 20.x on pushes and pull requests targeting `main`.
+
+Current local coverage is approximately:
+- Statements: 92.61%
+- Branches: 82.00%
+- Functions: 97.5%
 
 To run the tests locally:
 ```bash
@@ -308,6 +315,7 @@ This project helps you:
 
 GitLight implements Git's core object model end-to-end, but it's intentionally scoped down. A few things it deliberately does not do:
 
+- `add` currently stages one file path per invocation; directory-wide staging (`add .`) and multiple path arguments are not supported.
 - No executable-bit or symlink detection — every file is stored as a regular file (mode `100644`)
 - No packfiles, and no network protocol — no `clone`, `push`, `fetch`; everything lives in local loose objects
 - The staging index is a JSON file, not Git's real binary index format
