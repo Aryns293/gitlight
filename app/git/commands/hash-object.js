@@ -3,7 +3,8 @@ const { hashObject, writeObject } = require("../object-store");
 const { ensureRepo } = require("../repo-guard");
 
 class HashObjectCommand {
-  constructor(flag, filePath) {
+  constructor(flag, filePath, silent = false) {
+    this.silent = silent;
     if (filePath) {
       this.flag = flag;
       this.filePath = filePath;
@@ -25,13 +26,13 @@ class HashObjectCommand {
     if (this.flag === "-w") {
       ensureRepo();
       sha = writeObject("blob", content);
-      console.log(sha);
+      if (!this.silent) console.log(sha);
     } else if (this.flag) {
       console.error(`Unknown flag: ${this.flag}`);
       process.exit(1);
     } else {
       sha = hashObject("blob", content).sha;
-      console.log(sha);
+      if (!this.silent) console.log(sha);
     }
 
     return sha;

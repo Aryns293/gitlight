@@ -15,7 +15,7 @@ class AddCommand {
       process.exit(1);
     }
 
-    const hashCmd = new HashObjectCommand("-w", this.filePath);
+    const hashCmd = new HashObjectCommand("-w", this.filePath, true);
     const sha = hashCmd.execute();
 
     const index = new Index();
