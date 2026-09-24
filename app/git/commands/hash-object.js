@@ -3,14 +3,17 @@ const { hashObject, writeObject } = require("../object-store");
 const { ensureRepo } = require("../repo-guard");
 
 class HashObjectCommand {
-  constructor(flag, filePath, silent = false) {
+  constructor(arg1, arg2, silent = false) {
     this.silent = silent;
-    if (filePath) {
-      this.flag = flag;
-      this.filePath = filePath;
+    if (arg2) {
+      this.flag = arg1;
+      this.filePath = arg2;
+    } else if (arg1 && arg1.startsWith("-")) {
+      this.flag = arg1;
+      this.filePath = null;
     } else {
       this.flag = null;
-      this.filePath = flag;
+      this.filePath = arg1;
     }
   }
 
