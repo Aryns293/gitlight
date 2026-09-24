@@ -4,6 +4,17 @@ const crypto = require("crypto");
 const zlib = require("zlib");
 
 function gitDir() {
+  let dir = process.cwd();
+
+  while (true) {
+    const candidate = path.join(dir, ".git");
+    if (fs.existsSync(candidate)) return candidate;
+
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
   return path.join(process.cwd(), ".git");
 }
 
