@@ -1,5 +1,4 @@
 const { writeObject } = require("../object-store");
-const { updateHeadRef } = require("../refs");
 const { getAuthorIdentity } = require("../author");
 const { ensureRepo } = require("../repo-guard");
 
@@ -30,7 +29,6 @@ class CommitTreeCommand {
 
     const sha = writeObject("commit", Buffer.from(content));
 
-    updateHeadRef(sha);
     console.log(sha);
 
     return sha;
