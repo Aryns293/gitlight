@@ -108,12 +108,13 @@ describe('GitLight CLI', () => {
     expect(lsOutput).toContain('src');
   });
 
-  test('write-tree fails on an empty staging area', () => {
+  test('write-tree creates the empty tree object', () => {
     run('init');
-    expect(() => run('write-tree')).toThrow();
+    const output = run('write-tree');
+    expect(output).toBe('4b825dc642cb6eb9a060e54bf8d69288fbee4904');
   });
 
-  test('commit-tree creates a commit object and updates HEAD', () => {
+  test('commit-tree creates a commit object without updating HEAD', () => {
     run('init');
     fs.writeFileSync('test.txt', 'hello world');
     run('add test.txt');
@@ -122,8 +123,9 @@ describe('GitLight CLI', () => {
     const commitSha = run(`commit-tree ${treeSha} "" "manual commit"`);
     expect(commitSha).toMatch(/^[a-f0-9]{40}$/);
 
-    const headSha = fs.readFileSync('.git/refs/heads/main', 'utf-8').trim();
-    expect(headSha).toBe(commitSha);
+    // HEAD should NOT be updated by commit-tree (matches real Git)
+    const headPath = path.join('.git', 'refs', 'heads', 'main');
+    expect(fs.existsSync(headPath)).toBe(false);
   });
 
   test('cat-file -t reports the correct type for blob, tree, and commit', () => {
