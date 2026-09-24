@@ -26,7 +26,18 @@ class LsTreeCommand {
         console.error("Commit does not reference tree");
         process.exit(1);
       }
-      ({ content } = readObject(match[1]));
+      const tree = readObject(match[1]);
+      if (tree.type !== "tree") {
+        console.error(`${match[1]} is not a tree object`);
+        process.exit(1);
+      }
+      type = tree.type;
+      content = tree.content;
+    }
+
+    if (type !== "tree") {
+      console.error(`${this.sha} is not a tree object`);
+      process.exit(1);
     }
 
     parseTreeEntries(content).forEach((entry) => {
