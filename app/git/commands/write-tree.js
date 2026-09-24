@@ -9,11 +9,6 @@ class WriteTreeCommand {
     const index = new Index();
     const entries = index.read();
 
-    if (Object.keys(entries).length === 0) {
-      console.error("Nothing to write — staging area is empty");
-      process.exit(1);
-    }
-
     const sha = writeTreeFromEntries(entries);
     console.log(sha);
 
