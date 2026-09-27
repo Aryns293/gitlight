@@ -17,3 +17,4 @@ class WriteTreeCommand {
 }
 
 module.exports = WriteTreeCommand;
+
